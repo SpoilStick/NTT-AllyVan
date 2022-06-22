@@ -1,0 +1,49 @@
+create_ally_van()
+
+#define create_ally_van
+_x = Player.x + random(250) - 125
+_y = Player.y + random(250) - 125
+
+wait(100)
+
+with instance_create(_x, _y, CustomObject) {
+	name = "Ally Van"
+	maxhealth = 120
+	image_alpha = 0;
+	if instance_exists(enemy)
+	target = instance_nearest(x,y,enemy)
+	else target = instance_nearest(x,y,Floor)
+	if(target.x > x) {
+		right = 1
+		}
+	else {
+		right = -1
+		}
+	direction = 90 - (90 * right)
+	image_angle = direction
+	var drivespeed = 50;
+	var depth = 10;
+	team = 1
+	start = 10
+	sprite_index = sprVanDrive
+	maxspeed = other.drivespeed
+	on_draw = script_ref_create(vandraw)
+	on_step = script_ref_create(vanguide)
+	on_destroy = script_ref_create(vanexplo)
+	
+	spr_shadow = mskVan
+}
+
+#define vandraw
+if drivespeed > 1 {
+	sprite_index = sprVanDrive
+}
+
+#define vanguide
+
+if drivespeed >= 0 {
+	drivespeed -= 1
+	motion_add(8, direction)
+}
+
+#define vanexplo
